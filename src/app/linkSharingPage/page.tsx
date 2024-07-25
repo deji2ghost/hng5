@@ -17,8 +17,7 @@ interface dataProps{
 const LinkSharingPage = () => {
 
     const [ data, setData ] = useState<dataProps[]>([])
-    const clicked = (e) => {
-        e.preventDefault()
+    const clicked = () => {
         const newId = data.length + 1;
         console.log('clicked add new')
         console.log(data)
@@ -45,7 +44,7 @@ const LinkSharingPage = () => {
             <div className="hidden bg-White lg:flex lg:justify-center lg:w-[560px] lg:mx-auto">
                 <Image src={phone} alt="picture of phone" />
             </div>
-            <form className="bg-White flex flex-col px-4 md:px-6 lg:w-[808px] lg:mx-auto">
+            <div className="bg-White flex flex-col px-4 md:px-6 lg:w-[808px] lg:mx-auto">
                 <div className="flex flex-col gap-[40px] p-[24px] border-b border-Borders">
                     <FormHeader header="Customize your links" paragraph="Add/edit/remove links below and then share all your profiles with the world!"/>
                     <div className="flex flex-col gap-6">
@@ -90,7 +89,7 @@ const LinkSharingPage = () => {
                         Save
                     </Button>
                 </div>
-            </form>
+            </div>
         </div>
     </Header>
   )
