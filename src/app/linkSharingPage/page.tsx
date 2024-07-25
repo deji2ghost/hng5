@@ -9,14 +9,20 @@ import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCaretDown, faList } from "@fortawesome/free-solid-svg-icons"
 
+interface dataProps{
+    id: number,
+    link: string,
+    path: string
+}
 const LinkSharingPage = () => {
 
-    const [ data, setData ] = useState([{id: 1, link: '', path: 'ball'}])
-    const clicked = () => {
+    const [ data, setData ] = useState<dataProps[]>([])
+    const clicked = (e) => {
+        e.preventDefault()
         const newId = data.length + 1;
         console.log('clicked add new')
         console.log(data)
-        setData([...data, {id: newId, link: '', path: ' '}])
+        setData([...data, {id: newId, link: 'Github', path: ''}])
     }
 
     const handleDelete = (i: any) => {
@@ -24,6 +30,13 @@ const LinkSharingPage = () => {
         deleteVal.splice(i,1)
         setData(deleteVal)
     }
+
+
+    const options = [
+        {label: 'Github', value: 'Github'},
+        {label: 'Youtube', value: 'Youtube'},
+        {label: 'Twitter', value: 'Twitter'}
+    ]
 
    
   return (
@@ -55,9 +68,11 @@ const LinkSharingPage = () => {
                                     <div className="flex flex-col justify-center">
                                         <label className="font-[400] text-[12px]">Platform</label>
                                         <select className="select py-3 px-4 border border-Borders rounded-[8px] outline-none focus:hover:outline-none bg-White">
-                                            <option className="" value='Github'>Github</option>
-                                            <option className="" value='Youtube'>Youtube</option>
-                                            <option className="" value='Twitter'>Twitter</option>
+                                            {
+                                                options.map(option => 
+                                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                                )
+                                            }
                                         </select>
                                     </div>
                                     <div className="flex flex-col justify-center">
