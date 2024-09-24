@@ -5,11 +5,9 @@ import Header from "@/components/Header"
 import Image from "next/image"
 import phone from '../../../public/images/mobile-preview.svg'
 import Group from '../../../public/images/Group 273.svg'
-import { useState } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCaretDown, faList } from "@fortawesome/free-solid-svg-icons"
+import { ChangeEvent, useEffect, useState } from "react"
 
-interface dataProps{
+export interface dataProps{
     id: number,
     link: string,
     path: string
@@ -17,11 +15,14 @@ interface dataProps{
 const LinkSharingPage = () => {
 
     const [ data, setData ] = useState<dataProps[]>([])
+    const [ phoneMapped, setPhoneMapped ] = useState<dataProps[]>([])
     const clicked = () => {
-        const newId = data.length + 1;
+        const newId = data.length ?? 0 + 1;
+        const phoneId = data.length ?? 0 + 1;
         console.log('clicked add new')
         console.log(data)
         setData([...data, {id: newId, link: 'Github', path: ''}])
+        setPhoneMapped([...phoneMapped, {id: phoneId, link: 'Github', path: ''}])
     }
 
     const handleDelete = (i: any) => {
@@ -30,6 +31,27 @@ const LinkSharingPage = () => {
         setData(deleteVal)
     }
 
+    const handleSelect = (e: ChangeEvent<HTMLSelectElement>, id: number) => {
+        console.log(id, e.target.value)
+        const newLink = e.target.value
+        const newData = data.map(item => {
+            if(item.id === id){
+                return(
+                    {
+                        ...item,
+                        link: newLink.toString()
+                    }
+                )
+            }else{
+                return item
+            }
+        })
+        setData(newData)
+    }
+
+    const handleSaved = () => {
+        localStorage.setItem('savedLinks', JSON.stringify(data))
+    }
 
     const options = [
         {label: 'Github', value: 'Github'},
@@ -37,12 +59,25 @@ const LinkSharingPage = () => {
         {label: 'Twitter', value: 'Twitter'}
     ]
 
-   
+   useEffect(()=> {
+    console.log(data)
+   }, [data])
   return (
     <Header>
         <div className="lg:flex lg:items-start lg:justify-center lg:w-full lg:gap-6">
-            <div className="hidden bg-White lg:flex lg:justify-center lg:w-[560px] lg:mx-auto">
-                <Image src={phone} alt="picture of phone" />
+            <div className="hidden relative bg-White lg:block lg:justify-center lg:w-[560px] lg:mx-auto">
+                <Image src={phone} alt="picture of phone" className="mx-auto"/>
+                <div className="absolute top-52 left-0 right-0 mx-auto">
+                    {
+                        data?.map(phone=> {
+                            return(
+                                <p key={phone?.id} className="w-[45%] mx-auto top-2 border-red-700 border-b text-center" >
+                                    {phone?.link}
+                                </p>
+                            )
+                        })
+                    }
+                </div>
             </div>
             <div className="bg-White flex flex-col px-4 md:px-6 lg:w-[808px] lg:mx-auto">
                 <div className="flex flex-col gap-[40px] p-[24px] border-b border-Borders">
@@ -66,10 +101,11 @@ const LinkSharingPage = () => {
                                     </div>
                                     <div className="flex flex-col justify-center">
                                         <label className="font-[400] text-[12px]">Platform</label>
-                                        <select className="select py-3 px-4 border border-Borders rounded-[8px] outline-none focus:hover:outline-none bg-White">
+                                        <select onChange={(e) => handleSelect(e, item.id)} className="select py-3 px-4 border border-Borders rounded-[8px] outline-none focus:hover:outline-none bg-White">
                                             {
-                                                options.map(option => 
+                                                options.map(option => (
                                                     <option key={option.value} value={option.value}>{option.label}</option>
+                                                    )
                                                 )
                                             }
                                         </select>
@@ -85,7 +121,7 @@ const LinkSharingPage = () => {
                     </div>
                 </div> 
                 <div className="p-4 w-[100%]">
-                    <Button save>
+                    <Button handleClick={handleSaved} save>
                         Save
                     </Button>
                 </div>
